@@ -1,18 +1,19 @@
-# Flicksters 
+# SmartEditeur 
 
-**Flicsters** shows the latest movies currently playing in theaters. The app utilizes the Movie Database API to display images and basic information about these movies to the user.
+**Smart Editeur** C'est une petite application implémenté en java, cette application permet de compiler et d'executer simplement du code java.
 
-Time spent: **72** hours spent in total
+Duree du developpement: **1 Mois** 
 
-## User Stories
+## Planning du developpement
 
-The following **required** functionality is completed:
+Les fonctionnalités deja **implementé**  sont les suivantes:
 
-* [X] User can **scroll through current movies** from the Movie Database API
-* [X] Layout is optimized with the [ViewHolder](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern) pattern.
-* [X] For each movie displayed, user can see the following details:
-  * [X] Title, Poster Image, Overview (Portrait mode)
-  * [X] Title, Backdrop Image, Overview (Landscape mode)
+* [X] Creation d'un nouveau fichier
+* [X] Fermeture d'un fichier
+* [X] L'ouverture d'un fichier
+  * [X] Enregistrement d'un fichier
+  * [X] Compilation d'un fichier
+   * [X] Execution d'un fichier
 
 The following **optional** features are implemented:
 
