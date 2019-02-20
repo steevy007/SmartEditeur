@@ -32,7 +32,7 @@ public class Main_View extends JFrame {
   Execution e=new Execution(this,true);
   String path="";
   String path1="";
-  
+  String compi="";
     /**
      * Creates new form Main_View
      */
@@ -59,6 +59,10 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         
         File f=new File(path);
         File f1=new File(path1);
+        
+        /*if(path.isEmpty() || path1.isEmpty()){
+            JOptionPane.showMessageDialog(this,"Veuillez D'abord Enregistrer votre Fichier");
+        }*/
         if(f.getName().equals(jTabbedPane1.getTitleAt(0))){
                FileOutputStream save=new FileOutputStream(f);
             save.write("".getBytes());
@@ -126,9 +130,16 @@ jTabbedPane1.setTitleAt(0,"texte.java");
             JOptionPane.showMessageDialog(null,"Ce fichier existe deja");
         }
         }catch(IOException e){
+            jTabbedPane1.setTitleAt(0,"texte.java");
+            JOptionPane.showMessageDialog(this,"Echec D'enregistrement");
+             
         }
-        String nom=fichier.getName();
-        jTabbedPane1.setTitleAt(0,nom);
+           String nom=fichier.getName();
+        
+        if(!nom.equals("")){
+            jTabbedPane1.setTitleAt(0,nom);
+        }
+     
         
         return path1;
    }
@@ -140,10 +151,18 @@ jTabbedPane1.setTitleAt(0,"texte.java");
       try {
  
            Dialog d=new Dialog(this,true);
+           //jTabbedPane1.setTitleAt(0,"texte.java");
              path=d.ouvrir();
+             
              File f=new File(path);
              String nom=f.getName();
-             jTabbedPane1.setTitleAt(0, nom);
+             if(nom.equals("")){
+                 jTabbedPane1.setTitleAt(0,"texte.java");
+             }
+             else{
+                 jTabbedPane1.setTitleAt(0, nom);
+             }
+             
        String texte="";
        FileReader lecture;
           lecture = new FileReader(path);
@@ -156,6 +175,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
       code.setText(texte);
       } catch (FileNotFoundException ex) {
           JOptionPane.showMessageDialog(this,"Fichier non trouve");
+          jTabbedPane1.setTitleAt(0,"texte.java");
           jTabbedPane1.hide();
       }
       
@@ -170,6 +190,8 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         System.out.println(f.getName());
         }catch(Exception ex){}
     }
+    
+   
     
     public void nouveau() throws IOException{
          
@@ -190,15 +212,16 @@ jTabbedPane1.setTitleAt(0,"texte.java");
        }
        
        else{
+         
+         enregistrer();
             jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
-         enregistrer();
          code.setText(null);
          comp.setText(null);
        }
     }
     
-    if(jTabbedPane1.getTitleAt(0)!="texte.java" && !code.getText().isEmpty()){
+    if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().equals("")){
            int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
        
        if(choix==1){
@@ -210,10 +233,9 @@ jTabbedPane1.setTitleAt(0,"texte.java");
        }
        
        else{
+           save();
             jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
-         save();
-         jTabbedPane1.hide();
          code.setText(null);
          comp.setText(null);
          
@@ -221,10 +243,16 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     }
     }
   
-    public void compiler(){
+    public String compiler(){
         File fich1=new File(path);
     File fich2=new File(path1);
-   
+      /* if(path1.isEmpty() && !jTabbedPane1.getTitleAt(0).equals(fich2.getName())){
+            enregistrer();
+        }*/
+       
+      // else{
+    String nom=jTabbedPane1.getTitleAt(0);
+    
         if(!jTabbedPane1.isShowing()){
                 JOptionPane.showMessageDialog(this,"Veuillez Charger votre fichier");
         }
@@ -242,6 +270,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         while((ligne = bread.readLine())!= null){
       text+=ligne+"\n";
        comp.setText(text);
+       compi=text;
       // JOptionPane.showMessageDialog(this,text);
    }
 }catch(IOException ex){
@@ -249,6 +278,9 @@ jTabbedPane1.setTitleAt(0,"texte.java");
      }
         }   
        
+        
+       
+
         if(fich2.getName().equals(jTabbedPane1.getTitleAt(0))){
                       try{
    ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," javac "+path1);
@@ -263,15 +295,120 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         while((ligne = bread.readLine())!= null){
       text+=ligne+"\n";
        comp.setText(text);
+       compi=text;
    }
 }catch(IOException ex){
     System.err.println("Error"+ex.getMessage());
      }
         }
         
+      // }
+        
         /*if(path1.isEmpty() || path.isEmpty() || jTabbedPane1.getTitleAt(0).equals("texte.java")|| jTabbedPane1.isShowing()){
             JOptionPane.showMessageDialog(this,"Veuillez Enregistrer votre Fichier");
         }*/
+        return compi;
+    }
+    
+    
+     public void executer() throws IOException{
+         save();
+         compiler();
+           File fich1=new File(path);
+             File fich2=new File(path1);
+             
+             if(compi.isEmpty()){
+         if(fich1.getName().equals(jTabbedPane1.getTitleAt(0))){
+         String direc=path.substring(0,path.lastIndexOf(File.separator));
+         int lon=direc.length();
+         
+         String c=direc.substring(3,lon);
+        
+        String p=new File("exec.bat").getAbsolutePath();
+         File f=new File(p);
+         String n=jTabbedPane1.getTitleAt(0);
+         
+         if(!f.exists()){
+             f.createNewFile();
+             BufferedWriter fin=new BufferedWriter(new FileWriter(f,true));
+             fin.write("cd/");
+             fin.newLine();
+             fin.write("cd "+c);
+             fin.newLine();
+             fin.write("java "+n.substring(0,n.length()-5));
+             fin.newLine();
+             fin.write("exit /b");
+             fin.close();
+             
+            /* ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
+              Process process = processbuilder.redirectErrorStream(true).start();*/
+         }
+         else{
+              FileOutputStream save=new FileOutputStream(f);
+            save.write("".getBytes());
+             BufferedWriter fin=new BufferedWriter(new FileWriter(f,true));
+             fin.write("cd/");
+             fin.newLine();
+             fin.write("cd "+c);
+             fin.newLine();
+             fin.write("java "+n.substring(0,n.length()-5));
+             fin.newLine();
+             fin.write("exit /b");
+             fin.close();
+             
+            ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
+              Process process = processbuilder.redirectErrorStream(true).start();
+         }
+         }
+          
+          
+          if(fich2.getName().equals(jTabbedPane1.getTitleAt(0))){
+           String direc=path1.substring(0,path1.lastIndexOf(File.separator));
+         int lon=direc.length();
+         
+         String c=direc.substring(3,lon);
+        
+        String p=new File("exec.bat").getAbsolutePath();
+         File f=new File(p);
+         String n=jTabbedPane1.getTitleAt(0);
+         
+         if(!f.exists()){
+             f.createNewFile();
+             BufferedWriter fin=new BufferedWriter(new FileWriter(f,true));
+             fin.write("cd/");
+             fin.newLine();
+             fin.write("cd "+c);
+             fin.newLine();
+             fin.write("java "+n.substring(0,n.length()-5));
+             fin.newLine();
+             fin.write("exit /b");
+             fin.close();
+             
+             /*ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
+              Process process = processbuilder.redirectErrorStream(true).start();*/
+         }
+         else{
+              FileOutputStream save=new FileOutputStream(f);
+            save.write("".getBytes());
+             BufferedWriter fin=new BufferedWriter(new FileWriter(f,true));
+             fin.write("cd/");
+             fin.newLine();
+             fin.write("cd "+c);
+             fin.newLine();
+             fin.write("java "+n.substring(0,n.length()-5));
+             fin.newLine();
+             fin.write("exit /b");
+             fin.close();
+             
+             ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
+              Process process = processbuilder.redirectErrorStream(true).start();
+         }
+          
+          }
+          }
+             else{
+                 comp.setText(compi);
+             }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -308,7 +445,15 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         M_enr = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
 
         jButton2.setText("jButton2");
 
@@ -446,10 +591,10 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addComponent(jTabbedPane1))
+                    .addComponent(jTabbedPane1)
+                    .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE))
         );
@@ -558,10 +703,64 @@ jTabbedPane1.setTitleAt(0,"texte.java");
 
         jMenuBar1.add(Fich);
 
+        jMenu1.setForeground(new java.awt.Color(204, 204, 255));
+        jMenu1.setMnemonic('E');
+        jMenu1.setText("Execution");
+
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItem6.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem6.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem6.setText("Compiler");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem6);
+
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem7.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem7.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem7.setText("Executer");
+        jMenu1.add(jMenuItem7);
+
+        jMenuBar1.add(jMenu1);
+
         jMenu2.setForeground(new java.awt.Color(204, 204, 255));
         jMenu2.setMnemonic('o');
         jMenu2.setText("Outils");
+
+        jMenu4.setForeground(new java.awt.Color(0, 51, 255));
+        jMenu4.setText("Couleur");
+
+        jMenuItem8.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem8.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem8.setText("Modifier La couleur");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem8);
+
+        jMenu2.add(jMenu4);
+
+        jMenu5.setForeground(new java.awt.Color(0, 51, 255));
+        jMenu5.setText("Police");
+
+        jMenuItem9.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem9.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem9.setText("Modifier La Taille D'Ecriture");
+        jMenu5.add(jMenuItem9);
+
+        jMenu2.add(jMenu5);
+
         jMenuBar1.add(jMenu2);
+
+        jMenu3.setForeground(new java.awt.Color(204, 204, 255));
+        jMenu3.setMnemonic('A');
+        jMenu3.setText("Aide");
+        jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
 
@@ -594,23 +793,55 @@ jTabbedPane1.setTitleAt(0,"texte.java");
 
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
-    public void close(){
-        if(!jTabbedPane1.getTitleAt(0).isEmpty() && !code.getText().isEmpty()){
-             int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
+    public void close() throws IOException{
+        
+          if(jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
+          code.setText(null);
+         jTabbedPane1.setVisible(false);
+         comp.setText(null);
+        }
+        if(jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().isEmpty()){
+             int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Enregistrer ce fichier");
        
        if(choix==1){
-            jTabbedPane1.setVisible(false);
            jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         
          code.setText(null);
+         comp.setText(null);
+       }
+       
+       else{
+         
+         enregistrer();
+            jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
        }
         }
-        
-        else{
-            jTabbedPane1.setVisible(false);
+       
+         if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().equals("")){
+           int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
+       
+       if(choix==1){
            jTabbedPane1.setTitleAt(0,"texte.java");
-        
+         jTabbedPane1.setVisible(true);
+         
          code.setText(null);
-        }
+         comp.setText(null);
+       }
+       
+       else{
+           save();
+            jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
+         
+       }
+    }
+     
     }
     private void M_enrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_M_enrActionPerformed
         // TODO add your handling code here:
@@ -630,16 +861,28 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     }//GEN-LAST:event_btn_saveMouseEntered
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+      try {
+          // TODO add your handling code here:
         
-        e.setVisible(true);
+          executer();
+          
+          //e.setVisible(true);
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
       try {
           // TODO add your handling code here:7
           save();
+          if(path1.equals("") ){
+          enregistrer();
           compiler();
+          }
+          else{
+          compiler();
+          }
       } catch (IOException ex) {
           Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -694,8 +937,12 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        // TODO add your handling code here:
-        close();
+      try {
+          // TODO add your handling code here:
+          close();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -706,6 +953,23 @@ jTabbedPane1.setTitleAt(0,"texte.java");
           Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
       }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+          try {
+          // TODO add your handling code here:7
+          save();
+          compiler();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        // TODO add your handling code here:
+     col c=new col(this,true);
+        
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -756,13 +1020,21 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
