@@ -8,6 +8,7 @@ import Code_java.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,12 +44,13 @@ public class Main_View extends JFrame {
      */
     public Main_View() throws IOException{
         initComponents();
-        
+       
         this.setTitle("Smart-Editeur");
         this.setSize(1000,700);
         this.setLocationRelativeTo(null);
+        this.setIconImage(new ImageIcon("src/Icone/text_wrangler_19155.png").getImage());
         this.setVisible(true);
-       
+     
          jButton6.hide();
             jButton7.hide();
              jTabbedPane1.setIconAt(0, new ImageIcon("Icone/icons8_Document_30px.png"));
@@ -69,12 +71,13 @@ public class Main_View extends JFrame {
         //jScrollPane1.hide();
 //        jTabbedPane2.hide();
 jTabbedPane1.hide();
-jSeparator2.hide();
+
 
 jTabbedPane1.setTitleAt(0,"texte.java"); 
 close();
 Line();
  fontStyle();
+ 
 //   jFileChooser1.hide();
  // code.setText(d.ouvrir());
  //code.setText("1234");
@@ -130,7 +133,7 @@ public void Line(){
     
     
     public void copy(){
-        code.copy();
+       code.copy();
     }
     
     public void paste(){
@@ -225,7 +228,7 @@ public void Line(){
            texte+=ligne+"\n";
           
        }
-      code.setText(texte);
+   code.setText(texte);
       } catch (FileNotFoundException ex) {
           JOptionPane.showMessageDialog(this,"Fichier non trouve");
           jTabbedPane1.setTitleAt(0,"texte.java");
@@ -258,7 +261,8 @@ public void Line(){
     public void nouveau() throws IOException{
          
     if(jTabbedPane1.getTitleAt(0).equals("texte.java")  && !jTabbedPane1.isShowing()){
-        code.setText(null);
+        
+       code.setText(null);
        
          jTabbedPane1.setVisible(true);
          comp.setText(null);
@@ -291,7 +295,7 @@ public void Line(){
            jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          
-         code.setText(null);
+        code.setText(null);
          comp.setText(null);
        }
        
@@ -569,7 +573,6 @@ public void Line(){
         jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jSeparator2 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
         arbre = new javax.swing.JTree();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -593,7 +596,6 @@ public void Line(){
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
-        jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItem16 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -610,6 +612,7 @@ public void Line(){
         jButton2.setText("jButton2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1000, 700));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -699,18 +702,13 @@ public void Line(){
 
         jPanel3.setBackground(new java.awt.Color(204, 204, 255));
 
-        tex.setBackground(new java.awt.Color(204, 204, 255));
-        tex.setForeground(new java.awt.Color(0, 0, 0));
         tex.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        tex.setToolTipText("");
         tex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 texActionPerformed(evt);
             }
         });
 
-        taile.setBackground(new java.awt.Color(204, 204, 255));
-        taile.setForeground(new java.awt.Color(0, 0, 0));
         taile.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "14", "16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36" }));
         taile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -771,8 +769,6 @@ public void Line(){
 
         TBar.add(jPanel3);
 
-        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
-
         arbre.setBackground(new java.awt.Color(255, 255, 255));
         arbre.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(204, 204, 255), new java.awt.Color(51, 51, 51)));
         arbre.setForeground(new java.awt.Color(255, 255, 255));
@@ -803,7 +799,7 @@ public void Line(){
         );
         jLayeredPane1Layout.setVerticalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("tab1", jLayeredPane1);
@@ -815,11 +811,7 @@ public void Line(){
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTabbedPane1))
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -828,8 +820,7 @@ public void Line(){
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
                     .addComponent(jTabbedPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         comp.setEditable(false);
@@ -996,7 +987,6 @@ public void Line(){
             }
         });
         jMenu5.add(jMenuItem15);
-        jMenu5.add(jSeparator4);
 
         jMenuItem16.setBackground(new java.awt.Color(204, 204, 255));
         jMenuItem16.setForeground(new java.awt.Color(0, 0, 0));
@@ -1471,23 +1461,23 @@ public void Line(){
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         // TODO add your handling code here:
         String tai=taile.getSelectedItem().toString();
-       String tex1=tex.getSelectedItem().toString();
+        String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
         code.setFont(new Font(tex1,Font.PLAIN,Integer.parseInt(tai)));
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
         // TODO add your handling code here:
-         String tai=taile.getSelectedItem().toString();
-       String tex1=tex.getSelectedItem().toString();
+        String tai=taile.getSelectedItem().toString();
+        String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
         code.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
-         String tai=taile.getSelectedItem().toString();
-       String tex1=tex.getSelectedItem().toString();
+        String tai=taile.getSelectedItem().toString();
+        String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
         code.setFont(new Font(tex1,Font.ITALIC,Integer.parseInt(tai)));
     }//GEN-LAST:event_jLabel3MouseClicked
@@ -1576,9 +1566,7 @@ public void Line(){
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
-    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JComboBox<String> taile;
