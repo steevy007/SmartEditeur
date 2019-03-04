@@ -6,6 +6,8 @@
 package Interface;
 import Code_java.*;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,37 +25,66 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.tree.DefaultMutableTreeNode;
 /**
  *
  * @author Sanon
  */
 public class Main_View extends JFrame {
  
-  Execution e=new Execution(this,true);
+//  Execution e=new Execution(this,true);
   String path="";
   String path1="";
-  String compi="";
+ 
+   Color coul;
     /**
      * Creates new form Main_View
      */
-    public Main_View() throws IOException {
+    public Main_View() throws IOException{
         initComponents();
+        
         this.setTitle("Smart-Editeur");
         this.setSize(1000,700);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+       
+         jButton6.hide();
+            jButton7.hide();
+             jTabbedPane1.setIconAt(0, new ImageIcon("Icone/icons8_Document_30px.png"));
+             //jTabbedPane1.add("Nouveau",jScrollPane4);
+            
+      try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          //UIManager.setLookAndFeel(new NimbusLookAndFeel());
+      } catch (UnsupportedLookAndFeelException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (ClassNotFoundException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (InstantiationException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (IllegalAccessException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
         //jScrollPane1.hide();
 //        jTabbedPane2.hide();
 jTabbedPane1.hide();
 jSeparator2.hide();
+
 jTabbedPane1.setTitleAt(0,"texte.java"); 
+close();
+Line();
+ fontStyle();
 //   jFileChooser1.hide();
  // code.setText(d.ouvrir());
  //code.setText("1234");
  
     }
 
-
+public void Line(){
+    ImpLineNumModel l=new ImpLineNumModel();
+    l.getingLineNumber(code, jScrollPane4);
+}
     public void save() throws FileNotFoundException, IOException{
         
         
@@ -97,6 +128,18 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     
     }
     
+    
+    public void copy(){
+        code.copy();
+    }
+    
+    public void paste(){
+        code.paste();
+    }
+    
+    public void cut(){
+        code.cut();
+    }
     public String enregistrer(){
         Dialog d=new Dialog(this,true);
         path1=d.enr();
@@ -127,7 +170,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
             JOptionPane.showMessageDialog(null,"Fichier Enregistrer avec succes");
         }
         else{
-            JOptionPane.showMessageDialog(null,"Ce fichier existe deja");
+            JOptionPane.showMessageDialog(null,"Ce fichier existe deja","Erreur",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("src/Icone/icons8_Error_35px.png"));
         }
         }catch(IOException e){
             jTabbedPane1.setTitleAt(0,"texte.java");
@@ -159,9 +202,19 @@ jTabbedPane1.setTitleAt(0,"texte.java");
              if(nom.equals("")){
                  jTabbedPane1.setTitleAt(0,"texte.java");
              }
+            
              else{
                  jTabbedPane1.setTitleAt(0, nom);
              }
+             String nom1=jTabbedPane1.getTitleAt(0);
+                     if(nom1.substring(nom1.length()-5, nom1.length()).equals(".java")){
+            jButton6.show();
+            jButton7.show();
+        }
+                     if(!nom1.substring(nom1.length()-5, nom1.length()).equals(".java")){
+                     jButton6.hide();
+                  jButton7.hide();
+                     }
              
        String texte="";
        FileReader lecture;
@@ -182,6 +235,15 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         return path;
     }
     
+    public void fontStyle(){
+        String[] font=GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        for(int i=0;i<font.length;i++){
+            tex.addItem(font[i]);
+           
+        }
+        tex.setSelectedIndex(1);
+    }
+   /*
     public void projet(){
         try {
         Dialog d=new Dialog(this,true);
@@ -189,18 +251,19 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         String nom=f.getAbsolutePath();
         System.out.println(f.getName());
         }catch(Exception ex){}
-    }
+    }*/
     
    
     
     public void nouveau() throws IOException{
          
-    if(jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
+    if(jTabbedPane1.getTitleAt(0).equals("texte.java")  && !jTabbedPane1.isShowing()){
         code.setText(null);
+       
          jTabbedPane1.setVisible(true);
          comp.setText(null);
     }
-    if(jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().isEmpty()){
+    if(jTabbedPane1.getTitleAt(0).equals("texte.java") && jTabbedPane1.isShowing() &&code.getText().isEmpty()){
        int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Enregistrer ce fichier");
        
        if(choix==1){
@@ -211,7 +274,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
          comp.setText(null);
        }
        
-       else{
+       else {
          
          enregistrer();
             jTabbedPane1.setTitleAt(0,"texte.java");
@@ -241,9 +304,34 @@ jTabbedPane1.setTitleAt(0,"texte.java");
          
        }
     }
+    
+    if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
+        
+        int val=JOptionPane.showConfirmDialog(this,"Sauvegarder le fichier");
+        
+        if(val==0){
+            save();
+                jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
+        }
+        else{
+                     jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
+        }
+      
+        
+    }
+    }
+    
+    public void tree(){
+
     }
   
-    public String compiler(){
+    public void compiler(){
         File fich1=new File(path);
     File fich2=new File(path1);
       /* if(path1.isEmpty() && !jTabbedPane1.getTitleAt(0).equals(fich2.getName())){
@@ -256,6 +344,10 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         if(!jTabbedPane1.isShowing()){
                 JOptionPane.showMessageDialog(this,"Veuillez Charger votre fichier");
         }
+        
+        
+        //System.out.println(nom.substring(nom.length()-5, nom.length()));
+
         if(fich1.getName().equals(jTabbedPane1.getTitleAt(0))){
             try{
    ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," javac "+path);
@@ -270,7 +362,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         while((ligne = bread.readLine())!= null){
       text+=ligne+"\n";
        comp.setText(text);
-       compi=text;
+     
       // JOptionPane.showMessageDialog(this,text);
    }
 }catch(IOException ex){
@@ -295,7 +387,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         while((ligne = bread.readLine())!= null){
       text+=ligne+"\n";
        comp.setText(text);
-       compi=text;
+       
    }
 }catch(IOException ex){
     System.err.println("Error"+ex.getMessage());
@@ -307,17 +399,21 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         /*if(path1.isEmpty() || path.isEmpty() || jTabbedPane1.getTitleAt(0).equals("texte.java")|| jTabbedPane1.isShowing()){
             JOptionPane.showMessageDialog(this,"Veuillez Enregistrer votre Fichier");
         }*/
-        return compi;
+      
     }
     
     
      public void executer() throws IOException{
-         save();
-         compiler();
+        
+         
            File fich1=new File(path);
              File fich2=new File(path1);
-             
-             if(compi.isEmpty()){
+            /* String direc=path.substring(0,path.lastIndexOf(File.separator));
+         int lon=direc.length();
+         
+         String c=direc.substring(2,lon);
+         String n=jTabbedPane1.getTitleAt(0);*/
+   
          if(fich1.getName().equals(jTabbedPane1.getTitleAt(0))){
          String direc=path.substring(0,path.lastIndexOf(File.separator));
          int lon=direc.length();
@@ -340,8 +436,9 @@ jTabbedPane1.setTitleAt(0,"texte.java");
              fin.write("exit /b");
              fin.close();
              
-            /* ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
-              Process process = processbuilder.redirectErrorStream(true).start();*/
+             ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
+              Process process = processbuilder.redirectErrorStream(true).start();
+                
          }
          else{
               FileOutputStream save=new FileOutputStream(f);
@@ -358,6 +455,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
              
             ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
               Process process = processbuilder.redirectErrorStream(true).start();
+              //BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
          }
          }
           
@@ -386,6 +484,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
              
              /*ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+p);
               Process process = processbuilder.redirectErrorStream(true).start();*/
+          
          }
          else{
               FileOutputStream save=new FileOutputStream(f);
@@ -405,11 +504,46 @@ jTabbedPane1.setTitleAt(0,"texte.java");
          }
           
           }
-          }
-             else{
-                 comp.setText(compi);
-             }
+          
+          //comp.setText("");
+          /*
+                             try{
+            ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," java "+n.substring(0,n.length()-5));
+            processbuilder.directory(new File(c));
+            Process process = processbuilder.redirectErrorStream(true).start();
+            BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String ligne;
+            String text="";
+            /*if((ligne = bread.readLine())==null){
+               comp.setText("Compilation Reussi");
+
+             }*//*
+                 while((ligne = bread.readLine())!= null){
+               text+=ligne+"\n";
+                //comp.setText(text);
+                //compi=text;
+            }
+                 EC e=new EC(this,true);
+                 e.setExec("Steeve");
+         }catch(IOException ex){
+             System.err.println("Error"+ex.getMessage());
+              }*/
+  
     }
+     
+     
+     public void WebView(){
+          try{
+            //  System.out.println( path=new File("index.html").getAbsolutePath());
+      ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+"Help/index.html");
+   Process process = processbuilder.redirectErrorStream(true).start();
+  
+}catch(IOException ex){
+    System.err.println("Error"+ex.getMessage());
+     }
+    }
+     
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -420,17 +554,24 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     private void initComponents() {
 
         jButton2 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         TBar = new javax.swing.JToolBar();
         btn_save = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        tex = new javax.swing.JComboBox<>();
+        taile = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jSeparator2 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        arbre = new javax.swing.JTree();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -442,22 +583,38 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         M_enr = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
 
         jButton2.setText("jButton2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         TBar.setBackground(new java.awt.Color(204, 204, 255));
         TBar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -466,7 +623,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
 
         btn_save.setBackground(new java.awt.Color(204, 204, 255));
         btn_save.setForeground(new java.awt.Color(0, 0, 0));
-        btn_save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_d83d(0)_48.png"))); // NOI18N
+        btn_save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Save_as_50px_3.png"))); // NOI18N
         btn_save.setToolTipText("Sauvegarder Fichier");
         btn_save.setBorder(null);
         btn_save.setFocusable(false);
@@ -485,7 +642,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         TBar.add(btn_save);
 
         jButton4.setBackground(new java.awt.Color(204, 204, 255));
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_d83d(4)_48.png"))); // NOI18N
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_File_48px_2.png"))); // NOI18N
         jButton4.setToolTipText("Nouveau Fichier");
         jButton4.setBorder(null);
         jButton4.setFocusable(false);
@@ -499,7 +656,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         TBar.add(jButton4);
 
         jButton5.setBackground(new java.awt.Color(204, 204, 255));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_e740(3)_48.png"))); // NOI18N
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Add_File_48px.png"))); // NOI18N
         jButton5.setToolTipText("Ouvrir Fichier");
         jButton5.setBorder(null);
         jButton5.setFocusable(false);
@@ -513,7 +670,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         TBar.add(jButton5);
 
         jButton7.setBackground(new java.awt.Color(204, 204, 255));
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_25b6(2)_48.png"))); // NOI18N
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Play_48px.png"))); // NOI18N
         jButton7.setToolTipText("Executer Fichier");
         jButton7.setBorder(null);
         jButton7.setFocusable(false);
@@ -527,7 +684,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         TBar.add(jButton7);
 
         jButton6.setBackground(new java.awt.Color(204, 204, 255));
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_25b8(1)_48.png"))); // NOI18N
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Settings_48px.png"))); // NOI18N
         jButton6.setToolTipText("Compiler Fichier");
         jButton6.setBorder(null);
         jButton6.setFocusable(false);
@@ -540,14 +697,90 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         });
         TBar.add(jButton6);
 
+        jPanel3.setBackground(new java.awt.Color(204, 204, 255));
+
+        tex.setBackground(new java.awt.Color(204, 204, 255));
+        tex.setForeground(new java.awt.Color(0, 0, 0));
+        tex.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        tex.setToolTipText("");
+        tex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                texActionPerformed(evt);
+            }
+        });
+
+        taile.setBackground(new java.awt.Color(204, 204, 255));
+        taile.setForeground(new java.awt.Color(0, 0, 0));
+        taile.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "14", "16", "18", "20", "22", "24", "26", "28", "30", "32", "34", "36" }));
+        taile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taileActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Text_30px_1.png"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Bold_30px.png"))); // NOI18N
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Italic_30px_1.png"))); // NOI18N
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addGap(17, 17, 17)
+                .addComponent(tex, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(taile, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(436, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tex, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(taile, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        TBar.add(jPanel3);
+
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jTree1.setBackground(new java.awt.Color(255, 255, 255));
-        jTree1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(204, 204, 255), new java.awt.Color(51, 51, 51)));
-        jTree1.setForeground(new java.awt.Color(255, 255, 255));
+        arbre.setBackground(new java.awt.Color(255, 255, 255));
+        arbre.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, new java.awt.Color(204, 204, 255), new java.awt.Color(51, 51, 51)));
+        arbre.setForeground(new java.awt.Color(255, 255, 255));
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Projet");
-        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        jScrollPane2.setViewportView(jTree1);
+        arbre.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jScrollPane2.setViewportView(arbre);
+
+        jTabbedPane1.setBackground(new java.awt.Color(204, 204, 204));
 
         code.setBackground(new java.awt.Color(204, 204, 255));
         code.setColumns(1);
@@ -593,19 +826,19 @@ jTabbedPane1.setTitleAt(0,"texte.java");
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
-                    .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane2)
+                    .addComponent(jTabbedPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE))
         );
 
         comp.setEditable(false);
-        comp.setBackground(new java.awt.Color(51, 51, 51));
+        comp.setBackground(new java.awt.Color(204, 204, 255));
         comp.setColumns(1);
-        comp.setForeground(new java.awt.Color(204, 204, 255));
+        comp.setForeground(new java.awt.Color(51, 51, 51));
         comp.setRows(1);
         comp.setTabSize(1);
-        comp.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Console", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(204, 204, 255))); // NOI18N
+        comp.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "Console", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(51, 51, 51))); // NOI18N
         jScrollPane1.setViewportView(comp);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -623,18 +856,23 @@ jTabbedPane1.setTitleAt(0,"texte.java");
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jMenuBar1.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuBar1.setBackground(new java.awt.Color(204, 204, 255));
         jMenuBar1.setForeground(new java.awt.Color(204, 204, 255));
         jMenuBar1.setPreferredSize(new java.awt.Dimension(100, 23));
 
-        Fich.setForeground(new java.awt.Color(204, 204, 255));
+        Fich.setForeground(new java.awt.Color(0, 0, 0));
         Fich.setMnemonic('f');
         Fich.setText("Fichier");
+        Fich.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                FichMouseExited(evt);
+            }
+        });
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem1.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem1.setForeground(new java.awt.Color(51, 51, 51));
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_e731(0)_24.png"))); // NOI18N
+        jMenuItem1.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_New_File_30px.png"))); // NOI18N
         jMenuItem1.setText("Nouveau Fichier");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -645,8 +883,8 @@ jTabbedPane1.setTitleAt(0,"texte.java");
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem2.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem2.setForeground(new java.awt.Color(51, 51, 51));
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_e740(0)_24.png"))); // NOI18N
+        jMenuItem2.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Add_File_30px_1.png"))); // NOI18N
         jMenuItem2.setText("Ouvrir Fichier");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -657,7 +895,8 @@ jTabbedPane1.setTitleAt(0,"texte.java");
 
         jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem4.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem4.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem4.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Open_30px.png"))); // NOI18N
         jMenuItem4.setText("Ouvrir un projet");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -665,11 +904,12 @@ jTabbedPane1.setTitleAt(0,"texte.java");
             }
         });
         Fich.add(jMenuItem4);
+        Fich.add(jSeparator5);
 
         M_enr.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         M_enr.setBackground(new java.awt.Color(204, 204, 255));
-        M_enr.setForeground(new java.awt.Color(51, 51, 51));
-        M_enr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/Entypo_d83d(0)_24.png"))); // NOI18N
+        M_enr.setForeground(new java.awt.Color(0, 0, 0));
+        M_enr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Save_Archive_30px.png"))); // NOI18N
         M_enr.setText("Enregistrer Fichier Sous");
         M_enr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -680,8 +920,8 @@ jTabbedPane1.setTitleAt(0,"texte.java");
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem3.setForeground(new java.awt.Color(51, 51, 51));
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/FontAwesome_f02f(0)_24.png"))); // NOI18N
+        jMenuItem3.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Save_30px.png"))); // NOI18N
         jMenuItem3.setText("Sauvegarder");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -689,10 +929,12 @@ jTabbedPane1.setTitleAt(0,"texte.java");
             }
         });
         Fich.add(jMenuItem3);
+        Fich.add(jSeparator3);
 
         jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem5.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem5.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem5.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Delete_File_30px.png"))); // NOI18N
         jMenuItem5.setText("Fermer Fichier");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -701,15 +943,83 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         });
         Fich.add(jMenuItem5);
 
+        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem9.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem9.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Delete_30px.png"))); // NOI18N
+        jMenuItem9.setText("Quitter");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
+        Fich.add(jMenuItem9);
+
         jMenuBar1.add(Fich);
 
-        jMenu1.setForeground(new java.awt.Color(204, 204, 255));
+        jMenu5.setForeground(new java.awt.Color(0, 0, 0));
+        jMenu5.setMnemonic('e');
+        jMenu5.setText("Edition");
+
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem13.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem13.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Copy_30px.png"))); // NOI18N
+        jMenuItem13.setText("Copy");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem13);
+
+        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem14.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem14.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Paste_30px.png"))); // NOI18N
+        jMenuItem14.setText("Paste");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem14);
+
+        jMenuItem15.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem15.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem15.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Cut_30px.png"))); // NOI18N
+        jMenuItem15.setText("Cut");
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem15);
+        jMenu5.add(jSeparator4);
+
+        jMenuItem16.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem16.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Undo_30px.png"))); // NOI18N
+        jMenuItem16.setText("Undo");
+        jMenu5.add(jMenuItem16);
+
+        jMenuItem17.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem17.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Redo_30px.png"))); // NOI18N
+        jMenuItem17.setText("Redo");
+        jMenu5.add(jMenuItem17);
+
+        jMenuBar1.add(jMenu5);
+
+        jMenu1.setForeground(new java.awt.Color(0, 0, 0));
         jMenu1.setMnemonic('E');
         jMenu1.setText("Execution");
 
         jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         jMenuItem6.setBackground(new java.awt.Color(204, 204, 255));
         jMenuItem6.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Play_30px_1.png"))); // NOI18N
         jMenuItem6.setText("Compiler");
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -721,21 +1031,31 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem7.setBackground(new java.awt.Color(204, 204, 255));
         jMenuItem7.setForeground(new java.awt.Color(51, 51, 51));
+        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Settings_30px.png"))); // NOI18N
         jMenuItem7.setText("Executer");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem7);
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setForeground(new java.awt.Color(204, 204, 255));
+        jMenu2.setForeground(new java.awt.Color(0, 0, 0));
         jMenu2.setMnemonic('o');
         jMenu2.setText("Outils");
 
-        jMenu4.setForeground(new java.awt.Color(0, 51, 255));
+        jMenu4.setBackground(new java.awt.Color(204, 204, 255));
+        jMenu4.setForeground(new java.awt.Color(51, 51, 51));
+        jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Color_Wheel_30px.png"))); // NOI18N
         jMenu4.setText("Couleur");
 
+        jMenuItem8.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jMenuItem8.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem8.setForeground(new java.awt.Color(51, 51, 51));
-        jMenuItem8.setText("Modifier La couleur");
+        jMenuItem8.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Color_Dropper_30px.png"))); // NOI18N
+        jMenuItem8.setText("Modifier La couleur de fond");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem8ActionPerformed(evt);
@@ -743,23 +1063,45 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         });
         jMenu4.add(jMenuItem8);
 
+        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
+        jMenuItem10.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem10.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Choose_Font_30px_1.png"))); // NOI18N
+        jMenuItem10.setText("Modifier La Couleur d'ecriture");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem10);
+
         jMenu2.add(jMenu4);
-
-        jMenu5.setForeground(new java.awt.Color(0, 51, 255));
-        jMenu5.setText("Police");
-
-        jMenuItem9.setBackground(new java.awt.Color(204, 204, 255));
-        jMenuItem9.setForeground(new java.awt.Color(51, 51, 51));
-        jMenuItem9.setText("Modifier La Taille D'Ecriture");
-        jMenu5.add(jMenuItem9);
-
-        jMenu2.add(jMenu5);
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setForeground(new java.awt.Color(204, 204, 255));
+        jMenu3.setForeground(new java.awt.Color(0, 0, 0));
         jMenu3.setMnemonic('A');
         jMenu3.setText("Aide");
+
+        jMenuItem11.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem11.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem11.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_Geography_30px.png"))); // NOI18N
+        jMenuItem11.setText("Document Web");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem11);
+
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItem12.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem12.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_GIF_30px.png"))); // NOI18N
+        jMenuItem12.setText("Gif Video");
+        jMenu3.add(jMenuItem12);
+
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
@@ -768,7 +1110,7 @@ jTabbedPane1.setTitleAt(0,"texte.java");
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(TBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(TBar, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -841,6 +1183,28 @@ jTabbedPane1.setTitleAt(0,"texte.java");
          
        }
     }
+          if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
+               int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
+       
+       if(choix==1){
+           jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         
+         code.setText(null);
+         comp.setText(null);
+       }
+       
+       else{
+           save();
+            jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
+         
+       }
+          
+          } 
+         
      
     }
     private void M_enrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_M_enrActionPerformed
@@ -876,13 +1240,8 @@ jTabbedPane1.setTitleAt(0,"texte.java");
       try {
           // TODO add your handling code here:7
           save();
-          if(path1.equals("") ){
-          enregistrer();
+
           compiler();
-          }
-          else{
-          compiler();
-          }
       } catch (IOException ex) {
           Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -919,21 +1278,53 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
-        // TODO add your handling code here:
+      try {
+          // TODO add your handling code here:
+          save();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }//GEN-LAST:event_btn_saveActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+      try {
+          // TODO add your handling code here:
+          nouveau();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
+     
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+          try {
+          if(jTabbedPane1.isShowing()){
+             int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
+     
+            if(choix==1){
+                
+                        Dialog d=new Dialog(this,true);
+         jTabbedPane1.setVisible(true);
+          load();
+            }
+          }
+          else{
+              
+                        Dialog d=new Dialog(this,true);
+         jTabbedPane1.setVisible(true);
+          load();
+          }
+         //}
+          
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here
         
-        projet();
+     
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
@@ -965,11 +1356,141 @@ jTabbedPane1.setTitleAt(0,"texte.java");
       }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
+    public void closeF(){
+            int val=JOptionPane.showConfirmDialog(this,"Vouler vous vraiment fermer cette fenetre","Femer",JOptionPane.NO_OPTION);
+       
+            
+        if(val==0){
+            System.exit(0);
+        }
+        else{
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        }
+    }
+    public void style(){
+               String tai=taile.getSelectedItem().toString();
+       String tex1=tex.getSelectedItem().toString();
+        //System.out.println(Integer.parseInt(tai));
+        code.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
+    }
+    private void taileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taileActionPerformed
+        // TODO add your handling code here:
+        style();
+        
+    }//GEN-LAST:event_taileActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+        Color coul=JColorChooser.showDialog(null,"Changer la couleur de fond", TBar.getForeground());
+        jTabbedPane1.setForegroundAt(0, coul);
+        code.setForeground( coul);
+        comp.setForeground( coul);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         // TODO add your handling code here:
-     col c=new col(this,true);
-        
+
+        Color coul=JColorChooser.showDialog(null,"Changer la couleur de fond", TBar.getBackground());
+        TBar.setBackground(coul);
+        btn_save.setBackground(coul);
+        jButton4.setBackground(coul);
+        jButton5.setBackground(coul);
+        jButton7.setBackground(coul);
+        jButton6.setBackground(coul);
+        code.setBackground(coul);
+        comp.setBackground(coul);
+        jPanel3.setBackground(coul);
+        jMenuItem1.setBackground(coul);
+        jMenuItem2.setBackground(coul);
+        jMenuItem3.setBackground(coul);
+        jMenu4.setBackground(coul);
+        jMenuItem4.setBackground(coul);
+          jMenuItem5.setBackground(coul);
+            jMenuItem6.setBackground(coul);
+          jMenuItem7.setBackground(coul);
+            jMenuItem8.setBackground(coul);
+            jMenuItem9.setBackground(coul);
+              jMenuItem10.setBackground(coul);
+            jMenuItem11.setBackground(coul);
+              jMenuItem12.setBackground(coul);
+               M_enr.setBackground(coul);
+             
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+      try {
+          // TODO add your handling code here:
+          executer();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+        closeF();
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void FichMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FichMouseExited
+        // TODO add your handling code here:
+        
+       
+    }//GEN-LAST:event_FichMouseExited
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        // TODO add your handling code here:
+        WebView();
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        // TODO add your handling code here:
+        copy();
+        
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        // TODO add your handling code here:
+        paste();
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+        // TODO add your handling code here:
+        cut();
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
+
+    private void texActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_texActionPerformed
+        // TODO add your handling code here:
+       style();
+    }//GEN-LAST:event_texActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+    closeF();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        // TODO add your handling code here:
+        String tai=taile.getSelectedItem().toString();
+       String tex1=tex.getSelectedItem().toString();
+        //System.out.println(Integer.parseInt(tai));
+        code.setFont(new Font(tex1,Font.PLAIN,Integer.parseInt(tai)));
+    }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        // TODO add your handling code here:
+         String tai=taile.getSelectedItem().toString();
+       String tex1=tex.getSelectedItem().toString();
+        //System.out.println(Integer.parseInt(tai));
+        code.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
+    }//GEN-LAST:event_jLabel2MouseClicked
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        // TODO add your handling code here:
+         String tai=taile.getSelectedItem().toString();
+       String tex1=tex.getSelectedItem().toString();
+        //System.out.println(Integer.parseInt(tai));
+        code.setFont(new Font(tex1,Font.ITALIC,Integer.parseInt(tai)));
+    }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -1006,11 +1527,13 @@ jTabbedPane1.setTitleAt(0,"texte.java");
             }
         });
     }
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Fich;
     private javax.swing.JMenuItem M_enr;
     private javax.swing.JToolBar TBar;
+    private javax.swing.JTree arbre;
     private javax.swing.JButton btn_save;
     private javax.swing.JTextArea code;
     private javax.swing.JTextArea comp;
@@ -1019,6 +1542,9 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -1027,6 +1553,14 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -1037,11 +1571,17 @@ jTabbedPane1.setTitleAt(0,"texte.java");
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTree jTree1;
+    private javax.swing.JComboBox<String> taile;
+    private javax.swing.JComboBox<String> tex;
     // End of variables declaration//GEN-END:variables
 }

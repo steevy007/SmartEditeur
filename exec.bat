@@ -1,4 +1,4 @@
 cd/
 cd Users\Sanon\Desktop
-java vide
+java pam
 exit /b
