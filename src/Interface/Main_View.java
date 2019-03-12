@@ -48,12 +48,12 @@ public class Main_View extends JFrame {
         this.setTitle("Smart-Editeur");
         this.setSize(1000,700);
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon("src/Icone/text_wrangler_19155.png").getImage());
+        this.setIconImage(new ImageIcon(getClass().getResource("/Icone/text_wrangler_19155.png")).getImage());
         this.setVisible(true);
-     
+     jScrollPane2.hide();
          jButton6.hide();
             jButton7.hide();
-             jTabbedPane1.setIconAt(0, new ImageIcon("Icone/icons8_Document_30px.png"));
+             jTabbedPane1.setIconAt(0, new ImageIcon(getClass().getResource("/Icone/icons8_File_30px.png")));
              //jTabbedPane1.add("Nouveau",jScrollPane4);
             
       try {
@@ -90,7 +90,7 @@ public void Line(){
 }
     public void save() throws FileNotFoundException, IOException{
         
-        
+        comp.setText("");
         File f=new File(path);
         File f1=new File(path1);
         
@@ -133,27 +133,41 @@ public void Line(){
     
     
     public void copy(){
+        comp.setText("");
        code.copy();
     }
     
     public void paste(){
+         comp.setText("");
         code.paste();
     }
     
     public void cut(){
+         comp.setText("");
         code.cut();
     }
     public String enregistrer(){
+         comp.setText("");
         Dialog d=new Dialog(this,true);
         path1=d.enr();
          File fichier=new File(path1);
-         
+         //System.out.println(path1);
         try{
         if(!fichier.exists()){
             fichier.createNewFile();
             String texte=code.getText();
-            String nomP=path1+jTabbedPane1.getTitleAt(0);
-            Reader texte1=new StringReader(texte);
+            File f=new File(path1);
+            String nom=f.getName();
+             jTabbedPane1.setTitleAt(0,nom);
+                         if(nom.equals("")){
+                jTabbedPane1.setTitleAt(0,"texte.java");
+             }
+                     if(nom.substring(nom.length()-5, nom.length()).equals(".java")){
+            jButton6.show();
+            jButton7.show();
+        }
+           
+                Reader texte1=new StringReader(texte);
             BufferedReader bread = new BufferedReader(texte1);
             while((texte=bread.readLine())!=null){
                 BufferedWriter fin=new BufferedWriter(new FileWriter(fichier,true));
@@ -162,6 +176,8 @@ public void Line(){
 		fin.close();
                 //System.out.println(texte);
             }
+            
+        
             //System.out.println(texte1);
             //String path1= new File(nomP).getAbsolutePath();
             //System.out.println(path);
@@ -170,10 +186,10 @@ public void Line(){
             //fin.write("je suis steeve sanon");
             //System.out.println(texte);
             
-            JOptionPane.showMessageDialog(null,"Fichier Enregistrer avec succes");
+            JOptionPane.showMessageDialog(null,"Fichier Enregistrer avec succes","Succès",JOptionPane.INFORMATION_MESSAGE,new ImageIcon(getClass().getResource("/Icone/icons8_Ok_35px.png")));
         }
         else{
-            JOptionPane.showMessageDialog(null,"Ce fichier existe deja","Erreur",JOptionPane.INFORMATION_MESSAGE,new ImageIcon("src/Icone/icons8_Error_35px.png"));
+            JOptionPane.showMessageDialog(null,"Ce fichier existe deja","Echec",JOptionPane.INFORMATION_MESSAGE,new ImageIcon(getClass().getResource("/Icone/icons8_Cancel_35px_1.png")));
         }
         }catch(IOException e){
             jTabbedPane1.setTitleAt(0,"texte.java");
@@ -182,9 +198,7 @@ public void Line(){
         }
            String nom=fichier.getName();
         
-        if(!nom.equals("")){
-            jTabbedPane1.setTitleAt(0,nom);
-        }
+
      
         
         return path1;
@@ -192,6 +206,7 @@ public void Line(){
 //    String path1=d.ouvrir();
     
     public String load() throws IOException{
+         comp.setText("");
        // try{
        
       try {
@@ -259,7 +274,7 @@ public void Line(){
    
     
     public void nouveau() throws IOException{
-         
+          comp.setText("");
     if(jTabbedPane1.getTitleAt(0).equals("texte.java")  && !jTabbedPane1.isShowing()){
         
        code.setText(null);
@@ -267,31 +282,13 @@ public void Line(){
          jTabbedPane1.setVisible(true);
          comp.setText(null);
     }
-    if(jTabbedPane1.getTitleAt(0).equals("texte.java") && jTabbedPane1.isShowing() &&code.getText().isEmpty()){
-       int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Enregistrer ce fichier");
-       
-       if(choix==1){
-           jTabbedPane1.setTitleAt(0,"texte.java");
-         jTabbedPane1.setVisible(true);
-         
-         code.setText(null);
-         comp.setText(null);
-       }
-       
-       else {
-         
-         enregistrer();
-            jTabbedPane1.setTitleAt(0,"texte.java");
-         jTabbedPane1.setVisible(true);
-         code.setText(null);
-         comp.setText(null);
-       }
-    }
     
-    if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().equals("")){
-           int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
        
-       if(choix==1){
+    
+    if(jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().equals("")){
+           int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Enregistrer ce fichier");
+       
+       if(choix==JOptionPane.NO_OPTION){
            jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          
@@ -299,8 +296,8 @@ public void Line(){
          comp.setText(null);
        }
        
-       else{
-           save();
+       else if(choix==JOptionPane.OK_OPTION){
+           enregistrer();
             jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          code.setText(null);
@@ -308,19 +305,19 @@ public void Line(){
          
        }
     }
-    
+    else{}
     if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
         
         int val=JOptionPane.showConfirmDialog(this,"Sauvegarder le fichier");
         
-        if(val==0){
+        if(val==JOptionPane.OK_OPTION){
             save();
                 jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          code.setText(null);
          comp.setText(null);
         }
-        else{
+        else if(val==JOptionPane.NO_OPTION){
                      jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          code.setText(null);
@@ -328,7 +325,28 @@ public void Line(){
         }
       
         
-    }
+    }else{}
+    
+     if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().equals("")){
+        
+        int val=JOptionPane.showConfirmDialog(this,"Sauvegarder le fichier");
+        
+        if(val==JOptionPane.OK_OPTION){
+            save();
+                jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
+        }
+        else if(val==JOptionPane.NO_OPTION){
+                     jTabbedPane1.setTitleAt(0,"texte.java");
+         jTabbedPane1.setVisible(true);
+         code.setText(null);
+         comp.setText(null);
+        }
+      
+        
+    }else{}
     }
     
     public void tree(){
@@ -336,12 +354,16 @@ public void Line(){
     }
   
     public void compiler(){
+         comp.setText("");
         File fich1=new File(path);
     File fich2=new File(path1);
       /* if(path1.isEmpty() && !jTabbedPane1.getTitleAt(0).equals(fich2.getName())){
             enregistrer();
         }*/
-       
+           
+           
+         
+         
       // else{
     String nom=jTabbedPane1.getTitleAt(0);
     
@@ -353,8 +375,12 @@ public void Line(){
         //System.out.println(nom.substring(nom.length()-5, nom.length()));
 
         if(fich1.getName().equals(jTabbedPane1.getTitleAt(0))){
+          String direc=path.substring(0,path.lastIndexOf(File.separator));
             try{
-   ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," javac "+path);
+                
+              
+   ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," javac "+jTabbedPane1.getTitleAt(0));
+         processbuilder.directory(new File(direc));          
    Process process = processbuilder.redirectErrorStream(true).start();
    BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
    String ligne;
@@ -377,9 +403,11 @@ public void Line(){
         
        
 
-        if(fich2.getName().equals(jTabbedPane1.getTitleAt(0))){
+        if(fich2.getName().equals(jTabbedPane1.getTitleAt(0))){      
+           String pa=path1.substring(0,path1.lastIndexOf(File.separator));
                       try{
-   ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," javac "+path1);
+   ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," javac "+jTabbedPane1.getTitleAt(0));
+     processbuilder.directory(new File(pa));  
    Process process = processbuilder.redirectErrorStream(true).start();
    BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
    String ligne;
@@ -408,7 +436,7 @@ public void Line(){
     
     
      public void executer() throws IOException{
-        
+         comp.setText("");
          
            File fich1=new File(path);
              File fich2=new File(path1);
@@ -539,7 +567,9 @@ public void Line(){
      public void WebView(){
           try{
             //  System.out.println( path=new File("index.html").getAbsolutePath());
-      ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+"Help/index.html");
+            String f=new File("index.html").getAbsolutePath();
+            System.out.println();
+      ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," start "+f+"/src/Fich_Ex/index.html");
    Process process = processbuilder.redirectErrorStream(true).start();
   
 }catch(IOException ex){
@@ -1126,16 +1156,17 @@ public void Line(){
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     public void close() throws IOException{
-        
+         comp.setText("");
           if(jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
           code.setText(null);
          jTabbedPane1.setVisible(false);
          comp.setText(null);
         }
+          
         if(jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().isEmpty()){
              int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Enregistrer ce fichier");
        
-       if(choix==1){
+       if(choix==JOptionPane.NO_OPTION){
            jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          
@@ -1143,20 +1174,23 @@ public void Line(){
          comp.setText(null);
        }
        
-       else{
+       else if(choix==JOptionPane.OK_OPTION){
          
          enregistrer();
-            jTabbedPane1.setTitleAt(0,"texte.java");
+           
          jTabbedPane1.setVisible(true);
          code.setText(null);
          comp.setText(null);
        }
+       else{
+            
+        }
         }
        
          if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && !code.getText().equals("")){
            int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
        
-       if(choix==1){
+       if(choix==JOptionPane.NO_OPTION){
            jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
          
@@ -1164,7 +1198,7 @@ public void Line(){
          comp.setText(null);
        }
        
-       else{
+       else if(choix==JOptionPane.OK_OPTION){
            save();
             jTabbedPane1.setTitleAt(0,"texte.java");
          jTabbedPane1.setVisible(true);
@@ -1174,25 +1208,10 @@ public void Line(){
        }
     }
           if(!jTabbedPane1.getTitleAt(0).equals("texte.java") && code.getText().equals("")){
-               int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
-       
-       if(choix==1){
-           jTabbedPane1.setTitleAt(0,"texte.java");
-         jTabbedPane1.setVisible(true);
-         
+              save();
+               jTabbedPane1.setVisible(true);
          code.setText(null);
          comp.setText(null);
-       }
-       
-       else{
-           save();
-            jTabbedPane1.setTitleAt(0,"texte.java");
-         jTabbedPane1.setVisible(true);
-         code.setText(null);
-         comp.setText(null);
-         
-       }
-          
           } 
          
      
@@ -1243,22 +1262,12 @@ public void Line(){
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
       try {
-          if(jTabbedPane1.isShowing()){
-             int choix= JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder ce fichier");
-     
-            if(choix==1){
-                
-                        Dialog d=new Dialog(this,true);
-         jTabbedPane1.setVisible(true);
-          load();
-            }
-          }
-          else{
+          close();
               
                         Dialog d=new Dialog(this,true);
          jTabbedPane1.setVisible(true);
           load();
-          }
+         
          //}
           
       } catch (IOException ex) {
@@ -1346,22 +1355,97 @@ public void Line(){
       }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
-    public void closeF(){
+    public void closeF() throws IOException{
+         comp.setText("");
+          if(!jTabbedPane1.isShowing()){
+                    System.exit(0);
+                }  
+          
             int val=JOptionPane.showConfirmDialog(this,"Vouler vous vraiment fermer cette fenetre","Femer",JOptionPane.NO_OPTION);
        
+          
+        if(val==JOptionPane.OK_OPTION){
+            if(jTabbedPane1.isShowing() && !code.getText().equals("") && !jTabbedPane1.getTitleAt(0).equals("texte.java")){
+            int c=JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder le fichier "+jTabbedPane1.getTitleAt(0));
             
-        if(val==0){
-            System.exit(0);
+                if(c==JOptionPane.OK_OPTION){
+                    save();
+                       System.exit(0);
+                }
+                else if(c==JOptionPane.CANCEL_OPTION){
+                    
+                }
+                else{
+                       System.exit(0);
+                }
+            }
+            
+              if(jTabbedPane1.isShowing() && code.getText().equals("")&& !jTabbedPane1.getTitleAt(0).equals("texte.java")){
+            int c=JOptionPane.showConfirmDialog(this,"Voulez vous Sauvegarder le fichier "+jTabbedPane1.getTitleAt(0));
+            
+                if(c==JOptionPane.OK_OPTION){
+                    save();
+                }
+                
+                else if(c==JOptionPane.CANCEL_OPTION){
+                    this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+                else{
+                       System.exit(0);
+                }
+                
+               
+            }
+              
+                if(jTabbedPane1.isShowing() && !code.getText().equals("") && jTabbedPane1.getTitleAt(0).equals("texte.java")){
+            int c=JOptionPane.showConfirmDialog(this,"Voulez vous Enregistre le fichier avant la fermeture "+jTabbedPane1.getTitleAt(0));
+            
+                if(c==JOptionPane.OK_OPTION){
+                    enregistrer();
+                    System.exit(0);
+                }
+                
+                else if(c==JOptionPane.CANCEL_OPTION){
+                     this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+                else{
+                       System.exit(0);
+                }
+            }
+                
+                   if(jTabbedPane1.isShowing() && code.getText().equals("") && jTabbedPane1.getTitleAt(0).equals("texte.java")){
+                      int c=JOptionPane.showConfirmDialog(this,"Voulez vous Enregistre le fichier avant la fermeture "+jTabbedPane1.getTitleAt(0));
+            
+                if(c==JOptionPane.OK_OPTION){
+                    enregistrer();
+                    System.exit(0);
+                }
+                
+                else if(c==JOptionPane.CANCEL_OPTION){
+                     this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+                else{
+                       System.exit(0);
+                }
+                    }
+         
+        }
+       
+        else if(val==JOptionPane.NO_OPTION){
+            
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         }
         else{
             this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         }
+            
     }
     public void style(){
                String tai=taile.getSelectedItem().toString();
        String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
         code.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
+        comp.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
     }
     private void taileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taileActionPerformed
         // TODO add your handling code here:
@@ -1404,7 +1488,12 @@ public void Line(){
             jMenuItem11.setBackground(coul);
               jMenuItem12.setBackground(coul);
                M_enr.setBackground(coul);
-             
+             jMenuItem13.setBackground(coul);
+             jMenuItem14.setBackground(coul);
+             jMenuItem15.setBackground(coul);
+             jMenuItem16.setBackground(coul);
+             jMenuItem17.setBackground(coul);
+             jMenu4.setBackground(coul);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
@@ -1417,8 +1506,12 @@ public void Line(){
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        // TODO add your handling code here:
-        closeF();
+      try {
+          // TODO add your handling code here:
+          closeF();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void FichMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FichMouseExited
@@ -1454,8 +1547,14 @@ public void Line(){
     }//GEN-LAST:event_texActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-    closeF();
+      try {
+          // TODO add your handling code here:
+
+          closeF();
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    
     }//GEN-LAST:event_formWindowClosing
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
@@ -1464,6 +1563,7 @@ public void Line(){
         String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
         code.setFont(new Font(tex1,Font.PLAIN,Integer.parseInt(tai)));
+        comp.setFont(new Font(tex1,Font.PLAIN,Integer.parseInt(tai)));
     }//GEN-LAST:event_jLabel1MouseClicked
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
@@ -1472,6 +1572,7 @@ public void Line(){
         String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
         code.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
+        comp.setFont(new Font(tex1,Font.BOLD,Integer.parseInt(tai)));
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
@@ -1479,6 +1580,7 @@ public void Line(){
         String tai=taile.getSelectedItem().toString();
         String tex1=tex.getSelectedItem().toString();
         //System.out.println(Integer.parseInt(tai));
+        code.setFont(new Font(tex1,Font.ITALIC,Integer.parseInt(tai)));
         code.setFont(new Font(tex1,Font.ITALIC,Integer.parseInt(tai)));
     }//GEN-LAST:event_jLabel3MouseClicked
 

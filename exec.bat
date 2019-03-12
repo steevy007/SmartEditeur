@@ -1,4 +1,4 @@
 cd/
-cd Users\Sanon\Desktop
-java pam
+cd Users\Sanon\Documents
+java Babi
 exit /b

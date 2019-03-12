@@ -70,8 +70,9 @@ public class Dialog extends java.awt.Dialog {
     public String ouvrir(){
         JTextArea text=new JTextArea();
          FileNameExtensionFilter filter = new FileNameExtensionFilter (
-         "java & txt", "txt","java");
+         "java", "java");
          chooser.setFileFilter(filter);
+         
         int ret=chooser.showOpenDialog(text);
         String path="";
         if(ret==JFileChooser.APPROVE_OPTION){
@@ -87,14 +88,25 @@ public class Dialog extends java.awt.Dialog {
              FileNameExtensionFilter filter = new FileNameExtensionFilter (
          "java", "java");
          chooser.setFileFilter(filter);
+         
         int ret=chooser.showSaveDialog(this);
+        //if(ret==chooser){}
         String path="";
+        
         if(ret==JFileChooser.APPROVE_OPTION){
             path=chooser.getSelectedFile().getAbsolutePath();
+            File f=new File(path);
+            String n=f.getName();
+            if(!n.endsWith(".java")){
+                f=new File(n+".java");
+                path=f.getAbsolutePath();
             }
-
+            }
+            
         return path;
+         
         }
+      
 
       public String ouvrir1(){
           
