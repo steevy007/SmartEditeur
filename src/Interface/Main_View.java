@@ -46,6 +46,7 @@ public class Main_View extends JFrame {
   String path="";
   String path1="";
   String error="";
+  String name=System.getProperty("os.name");
    Color coul;
     /**
      * Creates new form Main_View
@@ -63,7 +64,9 @@ public class Main_View extends JFrame {
             jButton7.hide();
              jTabbedPane1.setIconAt(0, new ImageIcon(getClass().getResource("/Icone/icons8_File_30px.png")));
              //jTabbedPane1.add("Nouveau",jScrollPane4);
-            
+     
+       if(name.startsWith("Windows")){
+         
       try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
           //UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -76,6 +79,13 @@ public class Main_View extends JFrame {
       } catch (IllegalAccessException ex) {
           Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
       }
+           }else{
+            try {
+          UIManager.setLookAndFeel(new NimbusLookAndFeel());
+      } catch (UnsupportedLookAndFeelException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
+       }
         //jScrollPane1.hide();
 //        jTabbedPane2.hide();
 jTabbedPane1.hide();
@@ -476,7 +486,7 @@ public void Line(){
          String c=direc.substring(2,lon);*/
          String n=jTabbedPane1.getTitleAt(0);
         
-           String name=System.getProperty("os.name");
+           
         if(name.startsWith("Windows")){
             
        if(error.isEmpty()){
@@ -707,6 +717,7 @@ public void Line(){
         jMenu3 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
+        jMenuItem20 = new javax.swing.JMenuItem();
 
         jButton2.setText("jButton2");
 
@@ -1233,7 +1244,24 @@ public void Line(){
         jMenuItem12.setForeground(new java.awt.Color(0, 0, 0));
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_GIF_30px.png"))); // NOI18N
         jMenuItem12.setText("Gif Video");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem12);
+
+        jMenuItem20.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
+        jMenuItem20.setBackground(new java.awt.Color(204, 204, 255));
+        jMenuItem20.setForeground(new java.awt.Color(0, 0, 0));
+        jMenuItem20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_About_30px_2.png"))); // NOI18N
+        jMenuItem20.setText("A propos");
+        jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem20ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem20);
 
         jMenuBar1.add(jMenu3);
 
@@ -1612,6 +1640,7 @@ public void Line(){
              jMenu4.setBackground(coul);
              jMenuItem19.setBackground(coul);
              jMenuItem18.setBackground(coul);
+             jMenuItem20.setBackground(coul);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
@@ -1729,6 +1758,7 @@ public void Line(){
         jButton7.setBackground(new Color(204, 204, 255));
         jButton6.setBackground(new Color(204, 204, 255));
         code.setBackground(new Color(204, 204, 255));
+        jMenuItem20.setBackground(new Color(204, 204, 255));
         comp.setBackground(new Color(204, 204, 255));
         jPanel3.setBackground(new Color(204, 204, 255));
         jMenuItem1.setBackground(new Color(204, 204, 255));
@@ -1754,6 +1784,16 @@ public void Line(){
              jMenuItem19.setBackground(new Color(204, 204, 255));
              jMenuItem18.setBackground(new Color(204, 204, 255));
     }//GEN-LAST:event_jMenuItem19ActionPerformed
+
+    private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
+        // TODO add your handling code here:
+        About a=new About(this,true);
+        a.setVisible(true);
+    }//GEN-LAST:event_jMenuItem20ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1828,6 +1868,7 @@ public void Line(){
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
