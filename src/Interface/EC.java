@@ -12,7 +12,7 @@ import javax.swing.JTextArea;
  * @author Sanon
  */
 public class EC extends javax.swing.JDialog {
-      Main_View d;
+     // Main_View d;
     /**
      * Creates new form EC
      */

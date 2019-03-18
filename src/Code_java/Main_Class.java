@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 public class Main_Class {
     public static void main(String[]steeve) throws IOException, InterruptedException{
-        
+        /*
         Splash s=new Splash();
         s.setVisible(true);
         try{
@@ -48,13 +48,13 @@ public class Main_Class {
               s.getProg().setForeground(Color.WHITE);
             }
             if(i==100){
-                s.dispose();
+                s.dispose();*/
             Main_View f=new Main_View();
               f.setVisible(true);
-            }
+           /* }
             }
         }catch(Exception e){
     }
-        
+        */
     }
 }
