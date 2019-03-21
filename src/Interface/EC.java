@@ -18,8 +18,10 @@ public class EC extends javax.swing.JDialog {
      */
     public EC(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+       //
           initComponents();
-       this.setLocationRelativeTo(null);
+          setExec("kanou");
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
        
       
@@ -31,7 +33,7 @@ public class EC extends javax.swing.JDialog {
     }
     
     public void setExec(String text){
-        this.exec.setText(text);
+        this.exec.setText("kanou");
     }
     /**
      * This method is called from within the constructor to initialize the form.

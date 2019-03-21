@@ -10,6 +10,7 @@ import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.net.URL;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +61,7 @@ public class Main_View extends JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(getClass().getResource("/Icone/text_wrangler_19155.png")).getImage());
         this.setVisible(true);
-     jScrollPane2.hide();
+  jScrollPane2.hide();
          jButton6.hide();
             jButton7.hide();
              jTabbedPane1.setIconAt(0, new ImageIcon(getClass().getResource("/Icone/icons8_File_30px.png")));
@@ -88,7 +90,7 @@ public class Main_View extends JFrame {
        }
         //jScrollPane1.hide();
 //        jTabbedPane2.hide();
-jTabbedPane1.hide();
+//jTabbedPane1.hide();
 
 
 jTabbedPane1.setTitleAt(0,"texte.java"); 
@@ -474,7 +476,7 @@ public void Line(){
     }
     
     
-     public void executer() throws IOException, InterruptedException{
+     public void executer() throws IOException, InterruptedException,NoSuchElementException{
          //compiler();
          comp.setText("");
          
@@ -506,24 +508,40 @@ public void Line(){
             Process process = processbuilder.redirectErrorStream(true).start();
             //process.waitFor();
             BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
-             
+             BufferedReader err= new BufferedReader(new InputStreamReader(process.getErrorStream()));
+             BufferedWriter ec = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             String ligne;
             String text="";
             
             
                  while((ligne = bread.readLine())!= null){
+                     
                text+=ligne+"\n";
+               comp.setText(text);
+               if(ec!=null){
+                   try{
+                   comp.setText(text);
+              ec.append(reps.getText());
+              ec.close();
+              
+              comp.setText(text);
+                   }catch(NoSuchElementException  e){}
+               }
                
-                comp.setText(text);
-               
+              
                 //compi=text;
             }
-           
-                /* EC e=new EC(this,true);
-                 e.setExec("Steeve");*/
+                 
+                  bread.close();
+           err.close();
+               
+                 
+                 
          }catch(IOException ex){
              System.err.println("Error"+ex.getMessage());
-              }
+              }catch(NoSuchElementException  e){
+         
+         }
          
         
          }
@@ -685,8 +703,10 @@ public void Line(){
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jScrollPane4 = new javax.swing.JScrollPane();
         code = new javax.swing.JTextArea();
+        jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         comp = new javax.swing.JTextArea();
+        reps = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Fich = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -910,7 +930,7 @@ public void Line(){
         );
         jLayeredPane1Layout.setVerticalGroup(
             jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("tab1", jLayeredPane1);
@@ -945,19 +965,50 @@ public void Line(){
         comp.setMargin(new java.awt.Insets(10, 10, 0, 0));
         jScrollPane1.setViewportView(comp);
 
+        reps.setBackground(new java.awt.Color(51, 51, 51));
+        reps.setFont(new java.awt.Font("Engravers MT", 1, 14)); // NOI18N
+        reps.setForeground(new java.awt.Color(204, 204, 255));
+        reps.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        reps.setMargin(new java.awt.Insets(0, 0, 10, 10));
+        reps.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                repsKeyPressed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(reps)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(reps, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 255));
@@ -1795,6 +1846,21 @@ public void Line(){
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
+    private void repsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_repsKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER)
+		{
+            try {
+                executer();
+            } catch (IOException ex) {
+                Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+            }
+		}
+      
+    }//GEN-LAST:event_repsKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -1879,6 +1945,7 @@ public void Line(){
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1886,6 +1953,7 @@ public void Line(){
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField reps;
     private javax.swing.JComboBox<String> taile;
     private javax.swing.JComboBox<String> tex;
     // End of variables declaration//GEN-END:variables
