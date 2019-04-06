@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -68,6 +69,7 @@ public class Dialog extends java.awt.Dialog {
     
     
     public String ouvrir(){
+        
         JTextArea text=new JTextArea();
          FileNameExtensionFilter filter = new FileNameExtensionFilter (
          "java", "java");
@@ -84,6 +86,8 @@ public class Dialog extends java.awt.Dialog {
     
     
        public String enr(){
+           String path="";
+           try{
            chooser.setName("Enregistrer");
              FileNameExtensionFilter filter = new FileNameExtensionFilter (
          "java", "java");
@@ -91,7 +95,7 @@ public class Dialog extends java.awt.Dialog {
          
         int ret=chooser.showSaveDialog(this);
         //if(ret==chooser){}
-        String path="";
+        
         
         if(ret==JFileChooser.APPROVE_OPTION){
             path=chooser.getSelectedFile().getAbsolutePath();
@@ -102,7 +106,9 @@ public class Dialog extends java.awt.Dialog {
                 path=f.getAbsolutePath();
             }
             }
-            
+           }catch(Exception e){
+           JOptionPane.showMessageDialog(this,"Veuillez Enregistrer un fichier java");
+           }
         return path;
          
         }

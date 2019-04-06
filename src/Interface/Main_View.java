@@ -101,7 +101,7 @@ Line();
 //   jFileChooser1.hide();
  // code.setText(d.ouvrir());
  //code.setText("1234");
- 
+
     }
 
 public void Line(){
@@ -167,6 +167,7 @@ public void Line(){
         code.cut();
     }
     public String enregistrer(){
+        
          comp.setText("");
         Dialog d=new Dialog(this,true);
         path1=d.enr();
@@ -1308,6 +1309,9 @@ public void Line(){
         jMenuItem12.setForeground(new java.awt.Color(0, 0, 0));
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_GIF_30px.png"))); // NOI18N
         jMenuItem12.setText("Gif Video");
+        jMenuItem12.setToolTipText("Fonction Non disponble");
+        jMenuItem12.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/Icone/icons8_GIF_30px.png"))); // NOI18N
+        jMenuItem12.setEnabled(false);
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem12ActionPerformed(evt);
@@ -1740,7 +1744,7 @@ public void Line(){
       
       try {
           // TODO add your handling code here:
-          Desktop.getDesktop().browse(new URI("https://github.com/steevy007/SmartEditeur"));
+          Desktop.getDesktop().browse(new URI("https://steevy007.github.io/SMART--JCE-.web/"));
       } catch (IOException ex) {
           Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
       } catch (URISyntaxException ex) {

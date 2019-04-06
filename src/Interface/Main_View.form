@@ -513,6 +513,11 @@
                   <Image iconType="3" name="/Icone/icons8_GIF_30px.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Gif Video"/>
+                <Property name="toolTipText" type="java.lang.String" value="Fonction Non disponble"/>
+                <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/Icone/icons8_GIF_30px.png"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem12ActionPerformed"/>
