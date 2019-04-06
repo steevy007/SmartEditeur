@@ -502,6 +502,7 @@ public void Line(){
          
          //Execution direct
           try{
+              
             ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," java "+n.substring(0,n.length()-5));
             processbuilder.directory(new File(direc));
          
@@ -512,69 +513,70 @@ public void Line(){
              BufferedWriter ec = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             String ligne;
             String text="";
-            
+          
             
                  while((ligne = bread.readLine())!= null){
-                     
-               text+=ligne+"\n";
-               comp.setText(text);
-               if(ec!=null){
-                   try{
-                   comp.setText(text);
-              ec.append(reps.getText());
-              ec.close();
-              
-              comp.setText(text);
-                   }catch(NoSuchElementException  e){}
-               }
+                     text+=ligne+"\n";
                
-              
-                //compi=text;
+                comp.setText(text);
+               
+                ec.write(reps.getText());
+                ec.newLine();
+                comp.setText(text);
+                ec.close();
+               
             }
-                 
-                  bread.close();
-           err.close();
-               
-                 
-                 
-         }catch(IOException ex){
-             System.err.println("Error"+ex.getMessage());
-              }catch(NoSuchElementException  e){
-         
-         }
+              
+              
+           bread.close();    
+         }catch(Exception e){
+            //System.out.println("Error"+ex.getMessage());
+              }
          
         
          }
           
           
           if(fich2.getName().equals(jTabbedPane1.getTitleAt(0))){
-           String direc=path1.substring(0,path1.lastIndexOf(File.separator));
+             String direc=path1.substring(0,path1.lastIndexOf(File.separator));
          int lon=direc.length();
+        // System.out.println(direc);
+        // String c=direc.substring(3,lon);
          
-         String c=direc.substring(3,lon);
+         //Execution direct
           try{
+              
             ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," java "+n.substring(0,n.length()-5));
             processbuilder.directory(new File(direc));
-        
+         
             Process process = processbuilder.redirectErrorStream(true).start();
+            //process.waitFor();
             BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
+             BufferedReader err= new BufferedReader(new InputStreamReader(process.getErrorStream()));
+             BufferedWriter ec = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             String ligne;
             String text="";
-            
+          
             
                  while((ligne = bread.readLine())!= null){
-               text+=ligne+"\n";
+                     text+=ligne+"\n";
                
                 comp.setText(text);
-                //compi=text;
+               
+                ec.write(reps.getText());
+                ec.newLine();
+                comp.setText(text);
+                ec.close();
+               
             }
-                /* EC e=new EC(this,true);
-                 e.setExec("Steeve");*/
-         }catch(IOException ex){
-             System.err.println("Error"+ex.getMessage());
+              
+              
+           bread.close();    
+         }catch(Exception e){
+            //System.out.println("Error"+ex.getMessage());
               }
          
-
+        
                       }
         }else{
             comp.setText("Veuillez corrigez vos Erreur et Recompile\n"+error);
@@ -586,6 +588,7 @@ public void Line(){
          
          //System.out.println(nom);
          if(fich1.getName().equals(jTabbedPane1.getTitleAt(0))){
+             
          String direc=path.substring(0,path.lastIndexOf(File.separator));
          int lon=direc.length();
         // System.out.println(direc);
@@ -593,84 +596,89 @@ public void Line(){
          
          //Execution direct
           try{
-            ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," java "+n.substring(0,n.length()-5));
+            ProcessBuilder processbuilder = new ProcessBuilder ("bash","-c","java "+n.substring(0,n.length()-5));
             processbuilder.directory(new File(direc));
          
             Process process = processbuilder.redirectErrorStream(true).start();
             //process.waitFor();
             BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
+             BufferedReader err= new BufferedReader(new InputStreamReader(process.getErrorStream()));
+             BufferedWriter ec = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
              
             String ligne;
             String text="";
-            
-            
+          
+             
                  while((ligne = bread.readLine())!= null){
-               text+=ligne+"\n";
-               
+                     text+=ligne+"\n";
+              
                 comp.setText(text);
+               // ec.newLine();
+                ec.write(reps.getText());
                
-                //compi=text;
-            }
-           
-                /* EC e=new EC(this,true);
-                 e.setExec("Steeve");*/
-         }catch(IOException ex){
-             System.err.println("Error"+ex.getMessage());
+               ec.flush();
+                ec.close();
+               
+               }
+               bread.close(); 
+          
+              
+              
+              
+         }catch(Exception e){
+            //System.out.println("Error"+ex.getMessage());
               }
          
         
          }
           
-          
           if(fich2.getName().equals(jTabbedPane1.getTitleAt(0))){
-           String direc=path1.substring(0,path1.lastIndexOf(File.separator));
+         String direc=path1.substring(0,path1.lastIndexOf(File.separator));
          int lon=direc.length();
+        // System.out.println(direc);
+        // String c=direc.substring(3,lon);
          
-         String c=direc.substring(3,lon);
+         //Execution direct
           try{
-            ProcessBuilder processbuilder = new ProcessBuilder ("cmd","/c"," java "+n.substring(0,n.length()-5));
+            ProcessBuilder processbuilder = new ProcessBuilder ("bash","-c","java "+n.substring(0,n.length()-5));
             processbuilder.directory(new File(direc));
-        
+         
             Process process = processbuilder.redirectErrorStream(true).start();
+            //process.waitFor();
             BufferedReader bread = new BufferedReader(new InputStreamReader(process.getInputStream()));
+             BufferedReader err= new BufferedReader(new InputStreamReader(process.getErrorStream()));
+             BufferedWriter ec = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             String ligne;
             String text="";
-            
-            
+          
+             
                  while((ligne = bread.readLine())!= null){
-               text+=ligne+"\n";
-               
+                     text+=ligne+"\n";
+              
                 comp.setText(text);
-                //compi=text;
-            }
-                /* EC e=new EC(this,true);
-                 e.setExec("Steeve");*/
-         }catch(IOException ex){
-             System.err.println("Error"+ex.getMessage());
+               
+                ec.write(reps.getText());
+                ec.newLine();
+               ec.flush();
+                ec.close();
+               }
+               bread.close(); 
+            
+              
+              
+              
+         }catch(Exception e){
+            //System.out.println("Error"+ex.getMessage());
               }
          
-
-                      }
+        
+         }
         }else{
             comp.setText("Veuillez corrigez vos Erreur et Recompile\n"+error);
         }  
         }
     }
-     
-     
-     public void WebView(){
-          try{
-            System.out.println( path=new File("index.html").getAbsolutePath());
-            String f=new File("/Fich_Ex/index.html").getAbsolutePath();
-            System.out.println();
-      ProcessBuilder processbuilder = new ProcessBuilder (" start "+f);
-   Process process = processbuilder.redirectErrorStream(true).start();
-  
-}catch(IOException ex){
-    System.err.println("Error"+ex.getMessage());
-     }
-    }
-     
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -970,6 +978,11 @@ public void Line(){
         reps.setForeground(new java.awt.Color(204, 204, 255));
         reps.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         reps.setMargin(new java.awt.Insets(0, 0, 10, 10));
+        reps.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                repsActionPerformed(evt);
+            }
+        });
         reps.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 repsKeyPressed(evt);
@@ -1725,8 +1738,14 @@ public void Line(){
     }
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
       
+      try {
           // TODO add your handling code here:
-          WebView(); 
+          Desktop.getDesktop().browse(new URI("https://github.com/steevy007/SmartEditeur"));
+      } catch (IOException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (URISyntaxException ex) {
+          Logger.getLogger(Main_View.class.getName()).log(Level.SEVERE, null, ex);
+      }
      
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
@@ -1860,6 +1879,10 @@ public void Line(){
 		}
       
     }//GEN-LAST:event_repsKeyPressed
+
+    private void repsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_repsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_repsActionPerformed
 
     /**
      * @param args the command line arguments
